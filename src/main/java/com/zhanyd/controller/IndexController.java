@@ -1,10 +1,16 @@
 package com.zhanyd.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.github.pagehelper.PageHelper;
+import com.zhanyd.mapper.UserInfoMapper;
+import com.zhanyd.model.UserInfo;
+import com.zhanyd.service.UserService;
 
 /**
  * RestController是Spring 4.0推出的新特性,
@@ -17,6 +23,10 @@ import org.springframework.web.bind.annotation.RestController;
 @EnableAutoConfiguration
 public class IndexController {
 
+	@Autowired
+	UserService userService;
+	
+	
 	/**
      * spring boot会自动读取application.properties,
      * 并且将其作为系统参数进行注入,用户也可以在启动应用的时候
@@ -29,6 +39,24 @@ public class IndexController {
     /**
      * 由于使用了@RestControlelr,因此无需在使用@ResponseBody来标注返回的结果
      */
+    @RequestMapping("/addUser")
+    public String addUser(){
+    	UserInfo userInfo = new UserInfo();
+    	userInfo.setUserName("zhan");
+    	userInfo.setAge(34);
+    	userInfo.setAddress("wenzhou");
+    	userService.insertSelective(userInfo);
+        return "added";
+    }
+    
+    
+    @RequestMapping("/getUser")
+    public UserInfo getUser(){
+    	PageHelper.startPage(1, 10);
+    	UserInfo userInfo = userService.selectByPrimaryKey(1);
+        return userInfo;
+    }
+    
     @RequestMapping("/")
     public String sayHello(){
         return String.format("hello:%s", name);
