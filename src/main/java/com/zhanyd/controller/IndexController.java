@@ -1,16 +1,18 @@
 package com.zhanyd.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.github.pagehelper.PageHelper;
-import com.zhanyd.mapper.UserInfoMapper;
 import com.zhanyd.model.UserInfo;
 import com.zhanyd.service.UserService;
+
+
 
 /**
  * RestController是Spring 4.0推出的新特性,
@@ -25,7 +27,8 @@ public class IndexController {
 
 	@Autowired
 	UserService userService;
-	
+
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	/**
      * spring boot会自动读取application.properties,
@@ -54,6 +57,9 @@ public class IndexController {
     public UserInfo getUser(){
     	PageHelper.startPage(1, 10);
     	UserInfo userInfo = userService.selectByPrimaryKey(1);
+    	logger.trace("getUser trace");
+    	logger.debug("getUser debuger");
+    	logger.info("getUser info");
         return userInfo;
     }
     

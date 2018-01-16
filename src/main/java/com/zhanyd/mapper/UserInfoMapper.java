@@ -1,10 +1,7 @@
 package com.zhanyd.mapper;
 
-import org.apache.ibatis.annotations.Mapper;
-
 import com.zhanyd.model.UserInfo;
 
-@Mapper
 public interface UserInfoMapper {
     int deleteByPrimaryKey(Integer id);
 

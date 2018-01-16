@@ -24,7 +24,7 @@ spring:
         poolPreparedStatements: true
         maxOpenPreparedStatements: 20
 mybatis:
-  mapper-locations: classpath:mapping/*.xml
+  mapper-locations: classpath:com/zhanyd/mapping/*.xml
   type-aliases-package: com.zhanyd.model
 
 #pagehelper分页插件
@@ -37,4 +37,6 @@ pagehelper:
 logging:
   level:
     com.zhanyd.mapper: trace
+  file: ../logs/spring.log
+    
     
