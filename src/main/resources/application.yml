@@ -35,8 +35,8 @@ pagehelper:
     params: count=countSql
     
 logging:
-  level:
-    com.zhanyd.mapper: trace
-  file: ../logs/spring.log
+  config: classpath:logback-spring.xml
+  #level:
+    #com.zhanyd.mapper: trace
     
     

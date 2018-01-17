@@ -60,6 +60,7 @@ public class IndexController {
     	logger.trace("getUser trace");
     	logger.debug("getUser debuger");
     	logger.info("getUser info");
+    	logger.error("getUser error");
         return userInfo;
     }
     
