@@ -25,7 +25,7 @@ public class PermissionInterceptor implements HandlerInterceptor {
      */
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception{
-        System.out.println("in preHandle");
+        System.out.println("in preHandle " + request.getRequestURI());
         String token = request.getHeader("Authorization");
         if(StringHelp.isEmpty(token)){
             responseMessage(response,CodeStatus.TOKEN_ERROR,"token不能为空");
