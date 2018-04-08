@@ -54,7 +54,8 @@ public class IndexController {
     
     
     @RequestMapping("/getUser")
-    public UserInfo getUser(){
+    public UserInfo getUser(String userId){
+    	System.out.println(userId);
     	PageHelper.startPage(1, 10);
     	UserInfo userInfo = userService.selectByPrimaryKey(1);
     	logger.trace("getUser trace");
