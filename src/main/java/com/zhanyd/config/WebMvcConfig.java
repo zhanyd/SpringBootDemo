@@ -16,6 +16,7 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
      */
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        //registry.addInterceptor(new PermissionInterceptor()).addPathPatterns("/**").excludePathPatterns("/user/sendIdentifyingCode");
+        registry.addInterceptor(new PermissionInterceptor()).addPathPatterns("/**")
+        	.excludePathPatterns("/","/getUser");
     }
 }
