@@ -4,7 +4,7 @@ server:
 spring:
     datasource:
         name: test
-        url: jdbc:mysql://127.0.0.1:3306/imking?serverTimezone=UTC&useSSL=false
+        url: jdbc:mysql://127.0.0.1:3306/demo?serverTimezone=UTC&useSSL=false
         username: root
         password: root
         # 使用druid数据源
