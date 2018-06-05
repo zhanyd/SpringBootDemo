@@ -1,36 +1,36 @@
 package com.zhanyd.common;
 
-public class ApiResult {
+public class ApiResult<T> {
 
-	private String code;
+	private int code;
 	private String message;
-	private Object data;
+	private T data;
 	
 	public ApiResult(){
 		
 	}
 	
-	public ApiResult(String code,String message,Object data){
+	public ApiResult(int code,String message,T data){
 		this.code = code;
 		this.message = message;
 		this.data = data;
 	}
 	
-	public ApiResult success(Object data){
-		ApiResult apiResult = new ApiResult(CodeStatus.SUCCESS,CodeStatus.SUCCESS_MESSAGE,data);
+	public ApiResult<T> success(T data){
+		ApiResult<T> apiResult = new ApiResult(ResultEnum.SUCCESS.getCode(),ResultEnum.SUCCESS.getDesc(),data);
 		return apiResult;
 	}
 	
-	public ApiResult fail(String code,String message){
-		ApiResult apiResult = new ApiResult(code,message,null);
+	public ApiResult<T> fail(int code,String message){
+		ApiResult<T> apiResult = new ApiResult(code,message,null);
 		return apiResult;
 	}
 
-	public String getCode() {
+	public int getCode() {
 		return code;
 	}
 
-	public void setCode(String code) {
+	public void setCode(int code) {
 		this.code = code;
 	}
 
@@ -46,7 +46,7 @@ public class ApiResult {
 		return data;
 	}
 
-	public void setData(Object data) {
+	public void setData(T data) {
 		this.data = data;
 	}
 }

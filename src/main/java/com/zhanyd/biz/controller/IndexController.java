@@ -1,4 +1,4 @@
-package com.zhanyd.controller;
+package com.zhanyd.biz.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.github.pagehelper.PageHelper;
-import com.zhanyd.model.UserInfo;
-import com.zhanyd.service.UserService;
+import com.zhanyd.biz.model.Users;
+import com.zhanyd.biz.service.UserService;
 
 
 @RestController
@@ -28,25 +28,25 @@ public class IndexController {
 
     @RequestMapping("/addUser")
     public String addUser(){
-    	UserInfo userInfo = new UserInfo();
+    	/*UserInfo userInfo = new UserInfo();
     	userInfo.setUserName("zhan");
     	userInfo.setAge(34);
     	userInfo.setAddress("wenzhou");
-    	userService.insertSelective(userInfo);
+    	userService.insertSelective(userInfo);*/
         return "added";
     }
     
     
     @RequestMapping("/getUser")
-    public UserInfo getUser(String userId){
-    	System.out.println(userId);
+    public Users getUser(String userId){
+    	/*System.out.println(userId);
     	PageHelper.startPage(1, 10);
     	UserInfo userInfo = userService.selectByPrimaryKey(1);
     	logger.trace("getUser trace");
     	logger.debug("getUser debuger");
     	logger.info("getUser info");
-    	logger.error("getUser error");
-        return userInfo;
+    	logger.error("getUser error");*/
+        return null;
     }
     
     @RequestMapping("/")
