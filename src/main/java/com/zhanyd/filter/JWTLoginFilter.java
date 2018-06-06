@@ -2,7 +2,9 @@ package com.zhanyd.filter;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -14,6 +16,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -28,55 +32,52 @@ import io.jsonwebtoken.SignatureAlgorithm;
  */
 public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter{
 	
+	private AuthenticationManager authenticationManager;
+	
 	public JWTLoginFilter(AuthenticationManager authenticationManager) {
-		super.setAuthenticationManager(authenticationManager); 
+		this.authenticationManager = authenticationManager;
 	}
 	
-	
+	// 接收并解析用户凭证
 	@Override
-	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) {
-		try {
-			/*String authorization = request.getHeader("Authorization"); 
-			if(authorization == null || authorization.equals("")){
-				return super.attemptAuthentication(request, response)  ;  
-			}
-			Users user = new ObjectMapper().readValue(authorization , Users.class);*/
-			
-			String username = request.getParameter("username");
-			String password = request.getParameter("password");
-			Users user = new ObjectMapper().readValue(request.getInputStream() , Users.class);
-			return getAuthenticationManager().authenticate(
-					new UsernamePasswordAuthenticationToken(user.getUsername(), "", new ArrayList<>()));
-		} catch (IOException e) {
-			throw new RuntimeException(e); 
-		}
+	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
+		 try {
+	            Users user = new ObjectMapper().readValue(request.getInputStream(), Users.class);
+	            return authenticationManager.authenticate(
+	                    new UsernamePasswordAuthenticationToken(
+	                            user.getUsername(),
+	                            user.getPassword(),
+	                            new ArrayList<>())
+	            );
+	        } catch (IOException e) {
+	            throw new RuntimeException(e);
+	        }
 	}
 	
-	@Override
-	public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
-			throws IOException, ServletException {
-		
-		HttpServletRequest request = (HttpServletRequest) req; 
-		if(request.getMethod().equalsIgnoreCase("POST")){
-			super.doFilter(request, res, chain);
-			return ;
-		}
-		chain.doFilter(request, res );
-	}
-	@Override
-	protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
-			Authentication auth) {
-		String token = Jwts.builder()
-				.setSubject(((org.springframework.security.core.userdetails.User) auth.getPrincipal()).getUsername())
-				.setExpiration(new Date(System.currentTimeMillis() + 60 * 60 * 1000))
-				.signWith(SignatureAlgorithm.HS512, "MyJwtSecret").compact();
-		response.addHeader("Authorization", token);
-		try {
-			 ApiResult result = new ApiResult();
-			 ObjectMapper mapper = new ObjectMapper();
-			response.getWriter().write( mapper.writeValueAsString(result.success(auth.getName()))); 
-		} catch (IOException e) {
-			e.printStackTrace();
-		} 
-	}
+	//用户成功登录后，这个方法会被调用，我们在这个方法里生成token
+    @Override
+    protected void successfulAuthentication(HttpServletRequest request,
+                                            HttpServletResponse response,
+                                            FilterChain chain,
+                                            Authentication auth) throws IOException, ServletException {
+        // builder the token
+        String token = null;
+        try {
+            Collection<? extends GrantedAuthority> authorities = auth.getAuthorities();
+            // 定义存放角色集合的对象
+            List roleList = new ArrayList<>();
+            for (GrantedAuthority grantedAuthority : authorities) {
+                roleList.add(grantedAuthority.getAuthority());
+            }
+            token = Jwts.builder()
+                    .setSubject(auth.getName() + "-" + roleList)
+                    .setExpiration(new Date(System.currentTimeMillis() + 365 * 24 * 60 * 60 * 1000)) // 设置过期时间 365 * 24 * 60 * 60秒(这里为了方便测试，所以设置了1年的过期时间，实际项目需要根据自己的情况修改)
+                    .signWith(SignatureAlgorithm.HS512, "MyJwtSecret") //采用什么算法是可以自己选择的，不一定非要采用HS512
+                    .compact();
+            // 登录成功后，返回token到header里面
+            response.addHeader("Authorization", "Bearer " + token);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
