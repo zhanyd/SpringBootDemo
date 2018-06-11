@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.provisioning.UserDetailsManager;
@@ -26,6 +27,13 @@ static final String SELF_CSRF_COOKIE_NAME = "_token";
 	
 	@Autowired
 	protected DataSource dataSource;
+	
+	@Autowired
+	private UserDetailsService userDetailsService;
+	
+	@Autowired
+	private BCryptPasswordEncoder bCryptPasswordEncoder;
+	
 
 	@Override
 	public void configure(WebSecurity web) throws Exception {
@@ -34,22 +42,8 @@ static final String SELF_CSRF_COOKIE_NAME = "_token";
 
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.userDetailsService(jdbcUserDetailsManager()) ;
-		/*auth.jdbcAuthentication()
-			.dataSource(dataSource)
-			.usersByUsernameQuery("select username,password,true from users where username = ?")
-			.authoritiesByUsernameQuery("select username,'ROLE_USER' from authorities where username = ?")
-			.passwordEncoder(new BCryptPasswordEncoder());*/
-			
-	}
-	
-	public UserDetailsManager jdbcUserDetailsManager() throws Exception {
-		JdbcUserDetailsManager userMan = new JdbcUserDetailsManager();
-		userMan.setDataSource( dataSource ) ;
-		userMan.setRolePrefix("ROLE_");
-		userMan.setUsersByUsernameQuery( "select username,password,enabled from users where username = ?" ); 
-		userMan.setAuthoritiesByUsernameQuery("select username,authority from authorities where username = ?");
-		return userMan;
+		// 使用自定义身份验证组件
+        auth.authenticationProvider(new CustomAuthenticationProvider(userDetailsService,bCryptPasswordEncoder));
 	}
 	
 	@Override

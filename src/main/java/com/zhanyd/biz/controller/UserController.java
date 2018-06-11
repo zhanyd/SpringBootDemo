@@ -2,6 +2,7 @@ package com.zhanyd.biz.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,7 +31,8 @@ public class UserController {
 	 @PostMapping("signup")
 	 public ApiResult<String> signUp(Users user) {
 		 ApiResult<String> result = new ApiResult<String>();
-         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+         //user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+         user.setPassword(DigestUtils.md5DigestAsHex(user.getPassword().getBytes()));
         try{
         	 userService.insertSelective(user);
         }catch (Exception e) {

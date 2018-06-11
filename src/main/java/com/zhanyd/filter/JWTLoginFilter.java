@@ -71,7 +71,7 @@ public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter{
             }
             token = Jwts.builder()
                     .setSubject(auth.getName() + "-" + roleList)
-                    .setExpiration(new Date(System.currentTimeMillis() + 365 * 24 * 60 * 60 * 1000)) // 设置过期时间 365 * 24 * 60 * 60秒(这里为了方便测试，所以设置了1年的过期时间，实际项目需要根据自己的情况修改)
+                    .setExpiration(new Date(System.currentTimeMillis() + 60 * 1000)) // 设置过期时间 60秒
                     .signWith(SignatureAlgorithm.HS512, "MyJwtSecret") //采用什么算法是可以自己选择的，不一定非要采用HS512
                     .compact();
             // 登录成功后，返回token到header里面

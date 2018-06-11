@@ -12,8 +12,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
-import com.zhanyd.common.GrantedAuthorityImpl;
 import com.zhanyd.exception.TokenException;
+import com.zhanyd.security.GrantedAuthorityImpl;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -35,8 +35,9 @@ public class JWTAuthenticationFilter extends BasicAuthenticationFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         String header = request.getHeader("Authorization");
         if (header == null || !header.startsWith("Bearer ")) {
-            chain.doFilter(request, response);
-            return;
+            //chain.doFilter(request, response);
+        	//return;
+        	throw new TokenException("Token为空或者不是Bearer开头");
         }
         UsernamePasswordAuthenticationToken authentication = getAuthentication(request);
         SecurityContextHolder.getContext().setAuthentication(authentication);

@@ -1,4 +1,4 @@
-package com.zhanyd.common;
+package com.zhanyd.security;
 
 import org.springframework.security.core.GrantedAuthority;
 
