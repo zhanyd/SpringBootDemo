@@ -59,7 +59,7 @@ public class JWTAuthenticationFilter extends BasicAuthenticationFilter {
                     .getSubject();
             if (user != null) {
                 String[] split = user.split("-")[1].split(",");
-                ArrayList<GrantedAuthority> authorities = new ArrayList<>();
+                ArrayList<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
                 for (int i=0; i < split.length; i++) {
                     authorities.add(new GrantedAuthorityImpl(split[i]));
                 }

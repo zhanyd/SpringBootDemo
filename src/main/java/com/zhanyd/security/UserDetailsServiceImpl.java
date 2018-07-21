@@ -1,6 +1,7 @@
 package com.zhanyd.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -8,6 +9,8 @@ import org.springframework.stereotype.Service;
 
 import com.zhanyd.biz.mapper.UsersMapper;
 import com.zhanyd.biz.model.Users;
+
+import java.util.Collections;
 
 import static java.util.Collections.emptyList;
 
@@ -31,7 +34,7 @@ public class UserDetailsServiceImpl  implements UserDetailsService {
         if(user == null){
             throw new UsernameNotFoundException(username);
         }
-        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), emptyList());
+        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), Collections.EMPTY_LIST);
     }
 
 }
